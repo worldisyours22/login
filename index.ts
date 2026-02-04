@@ -94,8 +94,8 @@ app.all('/player/login/dashboard', async (req: Request, res: Response) => {
 });
 
 /**
- * @note validate login endpoint - validates GrowID credentials
- * @param req - express request with growId, password, _token
+ * @note validate login endpoint - validates GrowID credentials or registers new account
+ * @param req - express request with growId, password, _token, isRegister, email, password_verify
  * @param res - express response with token
  */
 app.all(
@@ -104,20 +104,47 @@ app.all(
     try {
       const formData = req.body as Record<string, string>;
       const _token = formData._token;
-      const growId = formData.growId;
-      const password = formData.password;
+      const growId = formData.growId || formData.register_growId || '';
+      const password = formData.password || formData.register_password || '';
+      const email = formData.register_email || '';
+      const passwordVerify = formData.register_password_verify || '';
+      const isRegister = formData.isRegister === '1' ? 1 : 0;
 
-      const token = Buffer.from(
-        `_token=${_token}&growId=${growId}&password=${password}&reg=0`,
-      ).toString('base64');
+      // Log registration attempts
+      if (isRegister === 1) {
+        console.log(`[REGISTER] GrowID: ${growId}, Email: ${email}`);
+      } else {
+        console.log(`[LOGIN] GrowID: ${growId}`);
+      }
 
-      res.setHeader('Content-Type', 'text/html');
+      // Generate token with registration flag and additional data
+      const tokenData = {
+        _token,
+        growId,
+        password,
+        email: isRegister === 1 ? email : '',
+        reg: isRegister,
+        timestamp: Date.now(),
+      };
+
+      const token = Buffer.from(JSON.stringify(tokenData)).toString('base64');
+
+      res.setHeader('Content-Type', 'application/json');
       res.json({
         status: 'success',
-        message: 'Account Validated.',
+        message: isRegister === 1 ? 'Account registered successfully!' : 'Account validated.',
         token,
         url: '',
         accountType: 'growtopia',
+        register: isRegister,
+        // Include registration data for server processing
+        ...(isRegister === 1 && {
+          registerData: {
+            growId,
+            password,
+            email,
+          },
+        }),
       });
     } catch (error) {
       console.log(`[ERROR]: ${error}`);

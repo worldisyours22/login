@@ -4,57 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growtopia - Dashboard</title>
+    <title>GrowSEA - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .modal-enter {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+        .field-hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body class="flex flex-col items-center justify-center h-screen bg-transparent">
     <div class="fixed inset-0 flex justify-center items-start pt-8">
-        <div
-            id="loginModal"
-            class="relative bg-[#2b4d6d] border-4 border-[#87b8cc] shadow-lg p-8 w-3/5 max-w-lg sm:w-4/5 xs:w-11/12 h-60 rounded-lg flex flex-col justify-center opacity-0 translate-y-[-20px] transition-all duration-700 ease-out">
-            <p class="text-white text-center font-bold text-2xl">Welcome to GrowSEA!</p>
+        <div id="loginModal"
+            class="relative bg-[#2b4d6d] border-4 border-[#87b8cc] shadow-lg p-8 w-3/5 max-w-lg sm:w-4/5 xs:w-11/12 h-auto min-h-[420px] rounded-lg flex flex-col justify-center opacity-0 translate-y-[-20px] transition-all duration-700 ease-out">
+            <p class="text-white text-center font-bold text-2xl mb-2">Welcome to GrowSEA!</p>
             <img src="https://i.ibb.co.com/Kcs5vbJy/growsea.png" alt="Logo" class="absolute top-4 left-12 w-16 h-16">
+            
             <div id="errorDiv"
-                class="hidden flex flex-col mt-2 text-xs text-red-700 font-bold px-[5px] bg-[#2b4d6d] rounded">
+                class="hidden flex flex-col mt-2 text-xs text-red-700 font-bold px-[5px] bg-[#2b4d6d] rounded mb-2">
                 <a id="errorMessage"></a>
             </div>
+            
+            <div id="successDiv"
+                class="hidden flex flex-col mt-2 text-xs text-green-400 font-bold px-[5px] bg-[#2b4d6d] rounded mb-2">
+                <a id="successMessage"></a>
+            </div>
+            
             <form method="post" action="/player/growid/login/validate" accept-charset="UTF-8" id="loginForm"
                 class="mt-3">
-                <div class="mb-1">
-                    <input name="type" value="log" type="hidden" />
-                    <input name="_token" value="{{ data }}" type="hidden" />
-                    <label for="loginGrowId" class="block text-white text-xs">GrowID</label>
-                    <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
-                        <i class="fas fa-user text-white mr-1 text-xs"></i>
-                        <input type="text" name="growId" id="loginGrowId"
-                            class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
-                            placeholder="Enter your GrowID">
+                <input name="type" value="log" type="hidden" />
+                <input name="_token" value="{{ data }}" type="hidden" />
+                <input name="isRegister" id="isRegister" value="0" type="hidden" />
+                
+                <div id="loginFields">
+                    <div class="mb-1">
+                        <label for="loginGrowId" class="block text-white text-xs">GrowID</label>
+                        <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
+                            <i class="fas fa-user text-white mr-1 text-xs"></i>
+                            <input type="text" name="growId" id="loginGrowId"
+                                class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
+                                placeholder="Enter your GrowID">
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <label for="loginPassword" class="block text-white text-xs">Password</label>
+                        <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
+                            <i class="fas fa-lock text-white mr-1 text-xs"></i>
+                            <input type="password" name="password" id="loginPassword"
+                                class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
+                                placeholder="Enter your Password">
+                            <button type="button" id="toggleLogPassword" class="text-white ml-2 focus:outline-none text-xs">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="mb-1">
-                    <label for="loginPassword" class="block text-white text-xs">Password</label>
-                    <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
-                        <i class="fas fa-lock text-white mr-1 text-xs"></i>
-                        <input type="password" name="password" id="loginPassword"
-                            class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
-                            placeholder="Enter your Password">
-                        <button type="button" id="toggleLogPassword" class="text-white ml-2 focus:outline-none text-xs">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                
+                <div id="registerFields" class="field-hidden">
+                    <div class="mb-1">
+                        <label for="registerGrowId" class="block text-white text-xs">GrowID</label>
+                        <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
+                            <i class="fas fa-user-plus text-white mr-1 text-xs"></i>
+                            <input type="text" name="register_growId" id="registerGrowId"
+                                class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
+                                placeholder="Choose your GrowID">
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <label for="registerPassword" class="block text-white text-xs">Password (8-18 chars, 1 letter, 1 number, 1 special: @#!$^&*.,)</label>
+                        <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
+                            <i class="fas fa-lock text-white mr-1 text-xs"></i>
+                            <input type="password" name="register_password" id="registerPassword"
+                                class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
+                                placeholder="Choose your Password">
+                            <button type="button" id="toggleRegPassword" class="text-white ml-2 focus:outline-none text-xs">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <label for="registerPasswordVerify" class="block text-white text-xs">Verify Password</label>
+                        <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
+                            <i class="fas fa-lock text-white mr-1 text-xs"></i>
+                            <input type="password" name="register_password_verify" id="registerPasswordVerify"
+                                class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
+                                placeholder="Verify your Password">
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <label for="registerEmail" class="block text-white text-xs">Email (for account verification)</label>
+                        <div class="flex items-center border-2 border-[#81d4fa] rounded bg-[#2b4d6d] px-1 py-1">
+                            <i class="fas fa-envelope text-white mr-1 text-xs"></i>
+                            <input type="email" name="register_email" id="registerEmail"
+                                class="w-full bg-[#2b4d6d] text-white text-xs placeholder-white focus:outline-none"
+                                placeholder="Enter your Email">
+                        </div>
                     </div>
                 </div>
-                <div class="flex justify-center items-center">
+                
+                <div class="flex justify-center items-center mt-4">
                     <button id="loginButton"
-                        class="w-3/4 px-2 py-1 rounded bg-[#00b8ff] text-white text-xs hover:bg-[#06a4dd] transition duration-300 ease-in-out transform hover:scale-105">Login</button>
+                        class="w-3/4 px-2 py-2 rounded bg-[#00b8ff] text-white text-sm hover:bg-[#06a4dd] transition duration-300 ease-in-out transform hover:scale-105 font-bold">
+                        <i class="fas fa-sign-in-alt mr-2"></i><span id="buttonText">Login</span>
+                    </button>
                 </div>
-                <p class="text-white text-[10px] text-center mt-2">If you don't have an account, just click login without filling anything.</p>
+                
+                <p class="text-white text-[10px] text-center mt-3">
+                    <span id="loginHelpText"><i class="fas fa-info-circle mr-1"></i>Enter your GrowID and password to login</span>
+                    <a href="#" id="toggleRegisterMode" class="text-[#87b8cc] hover:text-white ml-1"><u>Or click here to register</u></a>
+                </p>
+                
+                <p id="registerHelpText" class="text-white text-[10px] text-center mt-2 hidden">
+                    <i class="fas fa-magic mr-1"></i>Don't want to fill? <a href="#" id="autoRegister" class="text-[#87b8cc] hover:text-white"><u>Click here for auto-registration</u></a>
+                </p>
             </form>
         </div>
     </div>
+    
     <script>
+        let isRegisterMode = false;
+        
         document.addEventListener('DOMContentLoaded', function () {
+            // Load saved GrowID if exists
             if (localStorage.getItem('growId')) {
                 document.getElementById('loginGrowId').value = localStorage.getItem('growId');
             }
@@ -63,41 +139,208 @@
             setTimeout(function() {
                 const modal = document.getElementById('loginModal');
                 if (modal) {
-                    modal.classList.remove('opacity-0', 'translate-y-[-20px]');
+                    modal.classList.add('modal-enter');
                 }
             }, 100);
-
-            const loginGrowId = document.getElementById('loginGrowId').value
-            const loginPassword = document.getElementById('loginPassword').value
         });
+        
+        // Toggle between login and register mode
+        document.getElementById('toggleRegisterMode').addEventListener('click', function(event) {
+            event.preventDefault();
+            isRegisterMode = !isRegisterMode;
+            updateMode();
+        });
+        
+        // Auto-registration link
+        document.getElementById('autoRegister').addEventListener('click', function(event) {
+            event.preventDefault();
+            autoRegister();
+        });
+        
+        function updateMode() {
+            const loginFields = document.getElementById('loginFields');
+            const registerFields = document.getElementById('registerFields');
+            const buttonText = document.getElementById('buttonText');
+            const loginHelpText = document.getElementById('loginHelpText');
+            const registerHelpText = document.getElementById('registerHelpText');
+            const isRegisterField = document.getElementById('isRegister');
+            
+            if (isRegisterMode) {
+                loginFields.classList.add('field-hidden');
+                registerFields.classList.remove('field-hidden');
+                buttonText.textContent = 'Register';
+                loginHelpText.parentElement.classList.add('field-hidden');
+                registerHelpText.classList.remove('hidden');
+                isRegisterField.value = '1';
+            } else {
+                loginFields.classList.remove('field-hidden');
+                registerFields.classList.add('field-hidden');
+                buttonText.textContent = 'Login';
+                loginHelpText.parentElement.classList.remove('field-hidden');
+                registerHelpText.classList.add('hidden');
+                isRegisterField.value = '0';
+            }
+        }
+        
+        function autoRegister() {
+            // Generate random credentials for auto-registration
+            const timestamp = Date.now().toString(36).toUpperCase();
+            const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const newGrowId = 'Player_' + timestamp + randomStr;
+            const newPassword = 'GTPS_' + randomStr + Math.floor(Math.random() * 10000);
+            const newEmail = 'player_' + timestamp + '@example.com';
+            
+            // Fill in registration fields
+            document.getElementById('registerGrowId').value = newGrowId;
+            document.getElementById('registerPassword').value = newPassword;
+            document.getElementById('registerPasswordVerify').value = newPassword;
+            document.getElementById('registerEmail').value = newEmail;
+            
+            // Copy to login fields as well for submission
+            document.getElementById('loginGrowId').value = newGrowId;
+            document.getElementById('loginPassword').value = newPassword;
+            
+            // Show success message with credentials
+            const successDiv = document.getElementById('successDiv');
+            successDiv.classList.remove('hidden');
+            document.getElementById('successMessage').innerHTML = 
+                '<i class="fas fa-check-circle mr-1"></i>Account auto-generated!<br>' +
+                '<span class="text-white">GrowID: ' + newGrowId + '<br>Password: ' + newPassword + '</span>';
+            
+            // Save credentials to localStorage
+            localStorage.setItem('growId', newGrowId);
+            localStorage.setItem('password', newPassword);
+            
+            // Switch to login mode for submission
+            isRegisterMode = false;
+            updateMode();
+            
+            // Submit form after short delay
+            setTimeout(function() {
+                document.getElementById('loginForm').submit();
+            }, 2000);
+        }
+
         document.getElementById('loginButton').addEventListener('click', function (event) {
             event.preventDefault();
 
             const loginForm = document.getElementById('loginForm');
-            const uName = document.getElementById('loginGrowId').value;
-            const uPass = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('errorDiv');
+            const successDiv = document.getElementById('successDiv');
+            const isRegisterField = document.getElementById('isRegister');
 
-            if (!uName || !uPass) {
-                document.getElementById('errorDiv').classList.remove('hidden');
-                document.getElementById('errorMessage').innerHTML = 'Username or Password is empty';
-                return;
-            } else if (uName.length < 4 || uPass.length < 4) {
-                document.getElementById('errorDiv').classList.remove('hidden');
-                document.getElementById('errorMessage').innerHTML = 'Username or Password must be at least 4 characters long';
-                return;
-            } else {
+            // Hide any previous messages
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            if (isRegisterMode === '1' || isRegisterField.value === '1') {
+                // Registration mode
+                const rGrowId = document.getElementById('registerGrowId').value.trim();
+                const rPassword = document.getElementById('registerPassword').value.trim();
+                const rPasswordVerify = document.getElementById('registerPasswordVerify').value.trim();
+                const rEmail = document.getElementById('registerEmail').value.trim();
+                
+                // Copy to login fields for submission
+                document.getElementById('loginGrowId').value = rGrowId;
+                document.getElementById('loginPassword').value = rPassword;
+                
+                // Validation
+                if (!rGrowId || rGrowId.length < 4) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>GrowID must be at least 4 characters';
+                    return;
+                }
+                
+                if (!rPassword || rPassword.length < 8) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Password must be at least 8 characters';
+                    return;
+                }
+                
+                if (!/[A-Za-z]/.test(rPassword)) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Password must contain at least 1 letter';
+                    return;
+                }
+                
+                if (!/[0-9]/.test(rPassword)) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Password must contain at least 1 number';
+                    return;
+                }
+                
+                if (!/@#!$^&*.,/.test(rPassword)) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Password must contain at least 1 special character (@#!$^&*.,)';
+                    return;
+                }
+                
+                if (rPassword !== rPasswordVerify) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Passwords do not match';
+                    return;
+                }
+                
+                if (!rEmail || !rEmail.includes('@')) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Please enter a valid email';
+                    return;
+                }
+                
+                // Save and submit for registration
+                localStorage.setItem('growId', rGrowId);
+                isRegisterField.value = '1';
                 loginForm.submit();
-                localStorage.setItem('growId', document.getElementById('loginGrowId').value);
+            } else {
+                // Login mode
+                const uName = document.getElementById('loginGrowId').value.trim();
+                const uPass = document.getElementById('loginPassword').value.trim();
+
+                if (!uName || !uPass) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Please enter your GrowID and password';
+                    return;
+                }
+
+                if (uName.length < 4) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>GrowID must be at least 4 characters';
+                    return;
+                }
+
+                if (uPass.length < 4) {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('errorMessage').innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i>Password must be at least 4 characters';
+                    return;
+                }
+
+                // Save and submit for login
+                localStorage.setItem('growId', uName);
+                isRegisterField.value = '0';
+                loginForm.submit();
             }
-        })
+        });
+
         document.getElementById('toggleLogPassword').addEventListener('click', function () {
-            const LpasswordField = document.getElementById('loginPassword')
+            const LpasswordField = document.getElementById('loginPassword');
             const LpasswordFieldType = LpasswordField.getAttribute('type');
             if (LpasswordFieldType === 'password') {
                 LpasswordField.setAttribute('type', 'text');
                 this.innerHTML = '<i class="fas fa-eye-slash"></i>';
             } else {
                 LpasswordField.setAttribute('type', 'password');
+                this.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        });
+
+        document.getElementById('toggleRegPassword').addEventListener('click', function () {
+            const RpasswordField = document.getElementById('registerPassword');
+            const RpasswordFieldType = RpasswordField.getAttribute('type');
+            if (RpasswordFieldType === 'password') {
+                RpasswordField.setAttribute('type', 'text');
+                this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                RpasswordField.setAttribute('type', 'password');
                 this.innerHTML = '<i class="fas fa-eye"></i>';
             }
         });
