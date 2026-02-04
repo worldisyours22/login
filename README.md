@@ -1,0 +1,148 @@
+<h1 align="center">Growtopia Login Backend</h1>
+
+<p align="center">
+  A Growtopia Login System Dashboard.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/GTVersion-v5.40-green" alt="GTVersion: v5.40">
+</p>
+
+## Hosting Usage
+
+Tutorial:
+
+[![Tutorial Videos](http://img.youtube.com/vi/8OXt1tHmeAM/0.jpg)](http://www.youtube.com/watch?v=8OXt1tHmeAM)
+
+## API Endpoints
+
+- `GET /` - Returns a greeting message
+- `ALL /player/login/dashboard` - Serves the login dashboard HTML page
+- `POST /player/growid/login/validate` - Validates GrowID login credentials
+- `POST /player/growid/checktoken` - Redirects to `/player/growid/validate/checktoken` with refresh token and client data
+- `POST /player/growid/validate/checktoken` - Validates token and returns updated token
+
+## How It Works
+
+### 1. Dashboard Request
+
+When a user accesses `/player/login/dashboard`, the server:
+- Receives client data in the request body (optional)
+- Parses the data into key-value pairs
+- Converts the data to base64 format
+- Serves the dashboard HTML with the encoded data injected into the `_token` field
+
+### 2. Login Validation
+
+After the user submits the login form from `/player/login/dashboard`, a POST request is sent to `/player/growid/login/validate` containing:
+
+```txt
+type=log
+_token=<base64_encoded_client_data>
+growId=<username>
+password=<user_password>
+```
+
+Then responds with:
+
+```json
+{
+  "status": "success",
+  "message": "Account Validated.",
+  "token": "<base64_encoded_credentials>",
+  "url": "",
+  "accountType": "growtopia"
+}
+```
+
+**Note:** This implementation always validates successfully as it doesn't connect to a database. You should implement proper credential validation against your server database.
+
+### 3. Token Verification
+
+The Growtopia client sends data to the server in this format:
+
+```txt
+protocol|225
+ltoken|X3Rva2VuPWV5SjBZVzVyU1VST1lX...
+platformID|0,1,1
+adc|1
+```
+
+The `ltoken` is a base64-encoded string that decodes to:
+
+```txt
+_token=eyJ0YW5rSUROYW1lIjoiYWtpbyIs...&growId=UserName&password=UserPass
+```
+
+#### Token Structure
+
+- `_token` - Base64-encoded JSON containing client information (RID, MAC address, game version, etc.)
+- `growId` - Username
+- `password` - User password
+- `reg` - Registration status (0 = login, 1 = register)
+
+### 4. Token Refresh
+
+Endpoint `/player/growid/checktoken` redirects the client to `/player/growid/validate/checktoken` with the refresh token and client data.
+
+The client sends a POST request to `/player/growid/validate/checktoken` with the refresh token and client data:
+
+```txt
+refreshToken=<base64_encoded_refresh_token>
+clientData=<base64_encoded_client_data>
+```
+
+Then responds with:
+
+```json
+{
+  "status": "success",
+  "message": "Token is valid.",
+  "token": "<base64_encoded_credentials>",
+  "url": "",
+  "accountType": "growtopia"
+}
+```
+
+**Note:** This implementation always validates successfully as it doesn't connect to a database. You should implement proper credential validation against your server database.
+
+## Installation
+
+```bash
+bun install
+```
+
+## Development
+
+Run the development server locally:
+
+```bash
+bun run dev
+```
+
+## Deployment
+
+Deploy the application to Vercel:
+
+1. **Fork the repository** - Click the "Fork" button on the top right of this repository page
+2. **Login to Vercel** - Go to [Vercel](https://vercel.com) and login or register using your GitHub account (recommended)
+3. **Create new project**:
+   - Click the "New" button on the top right of your team project page
+   - Select "Project"
+   - Import your Git repository by selecting the forked repository
+   - Click "Import"
+4. **Configure and deploy**:
+   - Check the Framework Preset setting
+   - If the framework preset is not set to "Elysia", select "Elysia" from the dropdown
+   - Click "Deploy"
+   - Wait for the deployment to complete
+
+
+## Contact
+
+- Telegram: [@ethermite](https://t.me/ethermite)
+- Discord: [Nakai Community](https://discord.gg/UFr8C9gCq9)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
