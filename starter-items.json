@@ -1,0 +1,18 @@
+{
+  "items": [
+    {"itemId": 2, "count": 100},
+    {"itemId": 4, "count": 50},
+    {"itemId": 8, "count": 10},
+    {"itemId": 14, "count": 1},
+    {"itemId": 18, "count": 1},
+    {"itemId": 242, "count": 100}
+  ],
+  "startingCurrency": {
+    "gems": 100,
+    "coins": 0
+  },
+  "unlockedAchievements": [
+    "first_login",
+    "started_journey"
+  ]
+}
